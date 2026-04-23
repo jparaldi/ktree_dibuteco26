@@ -31,7 +31,7 @@ A estrutura de dados principal utilizada é uma **árvore k-dimensional (k-d tre
 
 ---
 
-## ⚙️ Gerenciamento de dependências com uv
+## Gerenciamento de dependências com uv
 
 Este projeto utiliza o **uv** para gerenciamento de ambiente e dependências.
 
