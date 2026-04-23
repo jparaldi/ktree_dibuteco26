@@ -1,0 +1,12 @@
+[project]
+name = "ktree-dibuteco26"
+version = "0.1.0"
+description = "Um trabalho para a disciplina de Algoritmos II."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dash>=4.1.0",
+    "dash-leaflet>=1.0.15",
+    "geopy>=2.4.1",
+    "pandas>=2.3.3",
+]

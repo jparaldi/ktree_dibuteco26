@@ -1,0 +1,5 @@
+É a parte da interface ( DAsh + Leaflet):
+
+layout é a parte visual
+
+callbacks é a interatividade
