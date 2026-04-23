@@ -35,7 +35,7 @@ A estrutura de dados principal utilizada é uma **árvore k-dimensional (k-d tre
 
 Este projeto utiliza o **uv** para gerenciamento de ambiente e dependências.
 
-### 🔹 Instalação do ambiente
+### Instalação do ambiente
 
 Após clonar o repositório:
 
