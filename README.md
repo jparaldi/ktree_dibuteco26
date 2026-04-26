@@ -51,3 +51,54 @@ Isso irá:
 ## Status
 
 Projeto em desenvolvimento.
+
+## Pipeline pra Organização
+
+Bloco 1 — Dados 
+
+Objetivo: transformar CSV cru → dados utilizáveis
+
+ Implementar csv_loader.py
+ Ler CSV com sep=';'
+ Limpar strings (espaços, etc.)
+ Garantir que não tem linhas quebradas
+ Criar estrutura intermediária (dict ou lista)
+
+Bloco 2 — Geocoding 
+
+Objetivo: endereço → coordenadas
+
+ Implementar geocoding.py
+ Integrar com OpenStreetMap (geopy)
+ Converter endereços em lat/lon
+ Salvar bares_geocoded.csv
+ Tratar erros (endereço inválido)
+
+Bloco 3 — KD-Tree 
+
+Objetivo: estrutura de dados
+
+ Implementar Node
+ Construção da árvore
+ Implementar busca ortogonal (retângulo)
+ Testar com dados pequenos
+
+Bloco 4 — Distância e ordenação 
+ Implementar cálculo de distância
+ Ordenar resultados por proximidade
+
+Bloco 5 — Integração 
+ Conectar dados → kd-tree
+ Executar busca com dados reais
+ Validar resultados
+
+Bloco 6 — Interface 
+ Criar app com Dash
+ Input de endereço
+ Renderizar mapa (Leaflet)
+ Mostrar tabela
+ Sincronizar mapa + tabela
+
+Bloco 7 — Extra (se sobrar tempo)
+ Busca circular (raio)
+ Melhorias visuais
