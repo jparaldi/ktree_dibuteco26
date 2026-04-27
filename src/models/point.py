@@ -19,7 +19,7 @@ class Point:
         self.city = city
         self.cep = cep
 
-        # Função muito importante para a Kd-Tree
+    # Função muito importante para a Kd-Tree
     def get_coord(self, axis: int) -> float:
         if axis == 0:
             return self.latitude
