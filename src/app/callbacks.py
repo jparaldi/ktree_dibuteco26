@@ -11,11 +11,101 @@ points = load_points_from_csv("data/processed/butecos_geocoded.csv")
 tree = build_kdtree(points)
 
 user_icon = {
-    "iconUrl": "https://cdn-icons-png.flaticon.com/512/64/64113.png",
-    "iconSize": [30, 30],
+    "iconUrl": "/assets/user_icon.png",
+    "iconSize": [40, 40],
+}
+
+bar_icon = {
+    "iconUrl": "/assets/bar_icon.png",
+    "iconSize": [40, 40],
 }
 
 def register_callbacks(app):
+    # Modal de opções
+    @app.callback(
+        Output("options-modal", "style"),
+        Input("options-button", "n_clicks"),
+        Input("close-options-button", "n_clicks"),
+        State("options-modal", "style"),
+        prevent_initial_call=False,
+    )
+    def toggle_options_modal(open_clicks, close_clicks, current_style):
+        if not open_clicks:
+            return current_style or {"display": "none"}
+
+        modal_display = current_style.get("display", "none") if current_style else "none"
+        new_display = "none" if modal_display != "none" else "flex"
+        
+        # Se está fechando, retorna none
+        if close_clicks and close_clicks > open_clicks:
+            new_display = "none"
+
+        return {
+            "position": "fixed",
+            "top": 0,
+            "left": 0,
+            "right": 0,
+            "bottom": 0,
+            "backgroundColor": "rgba(0, 0, 0, 0.5)",
+            "display": new_display,
+            "justifyContent": "center",
+            "alignItems": "center",
+            "zIndex": 2000,
+        }
+
+    # Sincronizar address input
+    @app.callback(
+        Output("address-input", "value"),
+        Input("address-input-field", "value"),
+    )
+    def update_address_input(field_value):
+        return field_value or ""
+
+    # Sincronizar sliders com inputs hidden
+    @app.callback(
+        Output("top-n", "value"),
+        Output("radius", "value"),
+        Input("top-n-slider", "value"),
+        Input("radius-slider", "value"),
+    )
+    def update_hidden_values(top_n_val, radius_val):
+        return top_n_val, radius_val
+
+    @app.callback(
+    Output("landing-screen", "style"),
+    Output("main-app", "style"),
+    Input("start-button", "n_clicks"),
+)
+    def show_app(n_clicks):
+        if n_clicks == 0:
+            return (
+                {
+                    "height": "100vh",
+                    "width": "100vw",
+                    "backgroundImage": "url('/assets/background.jpg')",
+                    "backgroundSize": "cover",
+                    "backgroundPosition": "center",
+                    "display": "flex",
+                    "justifyContent": "center",
+                    "alignItems": "center",
+                },
+                {"display": "none"}
+            )
+
+        return (
+            {"display": "none"},
+            {
+                "position": "fixed",
+                "inset": 0,
+                "width": "100vw",
+                "height": "100vh",
+                "overflow": "auto",
+                "visibility": "visible",
+                "opacity": 1,
+                "pointerEvents": "auto",
+            }
+        )
+
 
     @app.callback(
         Output("results", "children"),
@@ -31,28 +121,33 @@ def register_callbacks(app):
     def handle_search(n_clicks, address, top_n, custom_top_n, radius, custom_radius):
         # evita que a função seja executada antes do primeiro clique
         if n_clicks == 0:
-            return "", [], [-19.9208, -43.9378]
+            return html.Div(
+                "🔍 Digite um endereço e clique em 'Pesquisar'",
+                style={"textAlign": "center", "color": "#999", "paddingTop": "40px"}
+            ), [], [-19.9208, -43.9378]
         
         #evita erro de input vazio
         if not address:
-            return "Por favor, insira um endereço válido.", [], [-19.9208, -43.9378]
+            return html.Div(
+                "⚠️ Endereço inválido",
+                style={"color": "#d32f2f", "fontWeight": "bold"}
+            ), [], [-19.9208, -43.9378]
         
         # resolver top N
-        if top_n == "custom":
-            top_n = custom_top_n if custom_top_n else 5
         # garantir tipo correto para top_n
         top_n = int(top_n)
 
         # resolver raio
-        if radius == "custom":
-            radius = custom_radius if custom_radius else 2
         # garantir tipo correto para radius
         radius = float(radius)
         
         #1. Geocoding
         coords = geocode_address(address)
         if coords is None or coords[0] is None or coords[1] is None:
-            return "Endereço não encontrado. Por favor, tente novamente.", [], [-19.9208, -43.9378]
+            return html.Div(
+                "❌ Endereço não encontrado",
+                style={"color": "#d32f2f", "fontWeight": "bold"}
+            ), [], [-19.9208, -43.9378]
 
         ref_lat, ref_lon = coords
 
@@ -67,7 +162,10 @@ def register_callbacks(app):
         results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
 
         if not results:
-            return "Nenhum buteco encontrado próximo ao endereço fornecido.", [], [-19.9208, -43.9378]
+            return html.Div(
+                "😞 Nenhum buteco encontrado",
+                style={"color": "#ff9800", "fontWeight": "bold"}
+            ), [], [-19.9208, -43.9378]
 
         #4 Ordenação por distância
         sorted_results = sort_by_distance(results, ref_lat, ref_lon, metric="haversine")
@@ -75,12 +173,55 @@ def register_callbacks(app):
         filtered = [(p, d) for p, d in sorted_results if d <= radius]
 
         if not filtered:
-            return "Nenhum buteco encontrado dentro do raio especificado.", [], [-19.9208, -43.9378]
+            return html.Div(
+                "😞 Nenhum buteco neste raio",
+                style={"color": "#ff9800", "fontWeight": "bold"}
+            ), [], [-19.9208, -43.9378]
 
         top_results = filtered[:top_n]
         
-        result_text = html.Ul([
-            html.Li(f"{p.name} -> {d:.2f} km") for p, d in top_results
+        result_items = []
+        for idx, (p, d) in enumerate(top_results, 1):
+            result_items.append(
+                html.Div([
+                    html.Div(
+                        f"{idx}. {p.name}",
+                        style={
+                            "fontWeight": "bold",
+                            "fontSize": "16px",
+                            "color": "#ff6600",
+                            "marginBottom": "4px",
+                        }
+                    ),
+                    html.Div(
+                        f"📍 {d:.2f} km",
+                        style={
+                            "fontSize": "13px",
+                            "color": "#666",
+                            "marginBottom": "12px",
+                        }
+                    ),
+                ],
+                style={
+                    "paddingBottom": "12px",
+                    "borderBottom": "1px solid #eee",
+                }
+                )
+            )
+
+        result_text = html.Div([
+            html.Div(
+                f"✓ Encontrados {len(top_results)} buteco(s)",
+                style={
+                    "fontWeight": "bold",
+                    "fontSize": "15px",
+                    "color": "#4caf50",
+                    "marginBottom": "16px",
+                    "paddingBottom": "12px",
+                    "borderBottom": "2px solid #4caf50",
+                }
+            ),
+            html.Div(result_items),
         ])
 
         markers = []
@@ -102,6 +243,7 @@ def register_callbacks(app):
             markers.append(
                 dl.Marker(
                     position=(float(p.latitude), float(p.longitude)),
+                    icon=bar_icon,
                     children=dl.Tooltip(f"{p.name} ({d:.2f} km)"),
                 )
             )
