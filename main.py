@@ -3,6 +3,7 @@ from src.core.kdtree import build_kdtree
 from src.core.range_search import range_search
 from src.core.geometry import sort_by_distance
 from src.utils.csv_loader import load_points_from_csv
+from src.services.geocoding import geocode_address
 
 
 def create_test_points():
@@ -18,32 +19,44 @@ def create_test_points():
 def main():
     # 1. carregar pontos reais
     points = load_points_from_csv("data/processed/butecos_geocoded.csv")
-
     print(f"\nTotal de pontos carregados: {len(points)}")
 
     # 2. construir árvore
     tree = build_kdtree(points)
+    print("\nKD-Tree construída com sucesso.")
 
-    print("\nRaiz da árvore:")
-    print(tree)
+    # 3. input do usuário
+    address = input("\nDigite um endereço: ")
 
-    # 3. definir região de busca (ampla pra garantir retorno)
-    lat_min, lat_max = -20.0, -19.7
-    lon_min, lon_max = -44.1, -43.7
+    coords = geocode_address(address)
 
-    print("\nBuscando na região:")
+    if coords is None:
+        print("Endereço não encontrado.")
+        return
+
+    ref_lat, ref_lon = coords
+    print(f"\nCoordenadas encontradas: ({ref_lat}, {ref_lon})")
+
+    # 4. definir retângulo dinâmico (simples)
+    delta = 0.02  # ~2km (aproximação)
+
+    lat_min = ref_lat - delta
+    lat_max = ref_lat + delta
+    lon_min = ref_lon - delta
+    lon_max = ref_lon + delta
+
+    print("\nRegião de busca:")
     print(f"lat: [{lat_min}, {lat_max}]")
     print(f"lon: [{lon_min}, {lon_max}]")
 
-    # 4. busca na KD-tree
+    # 5. busca na KD-tree
     results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
 
-    print(f"\nTotal encontrados: {len(results)}")
+    print(f"\nTotal encontrados na região: {len(results)}")
 
-    # 5. ponto de referência (simula usuário)
-    ref_lat, ref_lon = -19.9, -43.9
-
-    print(f"\nPonto de referência: ({ref_lat}, {ref_lon})")
+    if not results:
+        print("Nenhum bar encontrado nessa região.")
+        return
 
     # 6. ordenação por distância (HAVERSINE)
     sorted_hav = sort_by_distance(results, ref_lat, ref_lon, metric="haversine")
@@ -59,7 +72,7 @@ def main():
     for p, d in sorted_euc[:5]:
         print(f"{p.name} -> {d:.6f} (graus)")
 
-    # 8. debug da distribuição dos dados
+    # 8. debug opcional
     lats = [p.latitude for p in points]
     lons = [p.longitude for p in points]
 
