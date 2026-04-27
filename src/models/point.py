@@ -20,16 +20,16 @@ class Point:
         self.cep = cep
 
         # Função muito importante para a Kd-Tree
-        def get_coord(self, axis: int) -> float:
-            if axis == 0:
-                return self.latitude
-            elif axis == 1:
-                return self.longitude
-            else:
-                raise ValueError("Deve ser um valor entre 0 e 1")
+    def get_coord(self, axis: int) -> float:
+        if axis == 0:
+            return self.latitude
+        elif axis == 1:
+            return self.longitude
+        else:
+            raise ValueError("Deve ser um valor entre 0 e 1")
         
-        def __repr__(self):
-            return (
-                f"Ponto(id={self.id}, name='{self.name}', adress='{self.adress}', "
-                f"latitude={self.latitude}, longitude={self.longitude})"
-            )
+    def __repr__(self):
+        return (
+            f"Ponto(id={self.id}, name='{self.name}', adress='{self.adress}', "
+            f"latitude={self.latitude}, longitude={self.longitude})"
+        )
