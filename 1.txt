@@ -1,0 +1,65 @@
+Etapas realizadas
+1. Coleta e preparação dos dados
+
+Foi utilizado um conjunto de dados contendo nomes e endereços de bares em Belo Horizonte.
+
+Os dados passaram por uma limpeza inicial para remover inconsistências de formatação.
+
+2. Geocodificação
+
+Os endereços foram convertidos em coordenadas geográficas (latitude e longitude) utilizando a biblioteca geopy com o serviço Nominatim (OpenStreetMap).
+
+Durante esse processo:
+
+Foi necessário respeitar limites de requisições (sleep)
+Alguns endereços falharam e foram tratados posteriormente
+Foi criada uma versão processada do CSV com coordenadas
+3. Modelagem dos dados
+
+Foi criada uma classe Point para representar cada bar, contendo:
+
+id
+nome
+endereço
+latitude
+longitude
+
+Essa estrutura facilita o uso dos dados na KD-Tree.
+
+4. Implementação da KD-Tree
+
+A árvore foi construída de forma balanceada, utilizando o seguinte método:
+
+Em cada nível, os pontos são ordenados por um eixo (latitude ou longitude)
+O ponto mediano é escolhido como nó
+A construção é feita recursivamente
+
+Os eixos alternam entre:
+
+latitude (axis = 0)
+longitude (axis = 1)
+
+Essa abordagem garante melhor desempenho nas buscas.
+
+5. Busca por região (Range Search)
+
+Foi implementada uma busca que retorna todos os pontos dentro de um retângulo definido por:
+
+intervalo de latitude
+intervalo de longitude
+
+A busca utiliza poda da árvore, ou seja:
+
+só percorre subárvores que podem conter pontos válidos
+evita visitar nós desnecessários
+Resultados
+Foram obtidos 126 pontos válidos após o processamento
+A KD-Tree foi construída com sucesso utilizando dados reais
+As buscas retornaram resultados coerentes com a região consultada
+A poda da árvore mostrou-se eficiente na redução de buscas desnecessárias
+Observações
+Alguns endereços não puderam ser geocodificados automaticamente
+Há possíveis duplicatas (mesma coordenada para diferentes bares)
+A precisão depende da qualidade do serviço de geocodificação
+
+Esses pontos não comprometem o funcionamento do algoritmo.

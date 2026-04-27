@@ -1,6 +1,7 @@
 from src.models.point import Point
 from src.core.kdtree import build_kdtree
 from src.core.range_search import range_search
+from src.utils.csv_loader import load_points_from_csv
 
 
 def create_test_points():
@@ -15,7 +16,7 @@ def create_test_points():
 
 def main():
     # 1. criar pontos
-    points = create_test_points()
+    points = load_points_from_csv("data/processed/butecos_geocoded.csv")
 
     print("Pontos:")
     for p in points:
@@ -28,8 +29,8 @@ def main():
     print(tree)
 
     # 3. definir região de busca
-    lat_min, lat_max = -19.85, -19.75
-    lon_min, lon_max = -43.85, -43.75
+    lat_min, lat_max = -20.0, -19.7
+    lon_min, lon_max = -44.1, -43.7
 
     print("\nBuscando na região:")
     print(f"lat: [{lat_min}, {lat_max}]")
@@ -42,6 +43,12 @@ def main():
     print("\nResultados:")
     for p in results:
         print(p)
+    
+    lats = [p.latitude for p in points]
+    lons = [p.longitude for p in points]
+
+    print(min(lats), max(lats))
+    print(min(lons), max(lons))
 
 
 if __name__ == "__main__":

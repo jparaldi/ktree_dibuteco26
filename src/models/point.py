@@ -3,7 +3,7 @@ class Point:
         self,
         id: int,
         name: str,
-        adress: str,
+        address: str,
         latitude: float,
         longitude: float,
         neighborhood: str = None,
@@ -12,7 +12,8 @@ class Point:
     ):
         self.id = id
         self.name = name
-        self.adress = adress
+        self.address = address
+        self.adress = address
         self.latitude = latitude
         self.longitude = longitude
         self.neighborhood = neighborhood
@@ -30,6 +31,6 @@ class Point:
         
     def __repr__(self):
         return (
-            f"Ponto(id={self.id}, name='{self.name}', adress='{self.adress}', "
+            f"Ponto(id={self.id}, name='{self.name}', address='{self.address}', "
             f"latitude={self.latitude}, longitude={self.longitude})"
         )
