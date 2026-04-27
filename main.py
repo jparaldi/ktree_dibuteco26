@@ -1,6 +1,7 @@
 from src.models.point import Point
 from src.core.kdtree import build_kdtree
 from src.core.range_search import range_search
+from src.core.geometry import sort_by_distance
 from src.utils.csv_loader import load_points_from_csv
 
 
@@ -15,12 +16,10 @@ def create_test_points():
 
 
 def main():
-    # 1. criar pontos
+    # 1. carregar pontos reais
     points = load_points_from_csv("data/processed/butecos_geocoded.csv")
 
-    print("Pontos:")
-    for p in points:
-        print(p)
+    print(f"\nTotal de pontos carregados: {len(points)}")
 
     # 2. construir árvore
     tree = build_kdtree(points)
@@ -28,7 +27,7 @@ def main():
     print("\nRaiz da árvore:")
     print(tree)
 
-    # 3. definir região de busca
+    # 3. definir região de busca (ampla pra garantir retorno)
     lat_min, lat_max = -20.0, -19.7
     lon_min, lon_max = -44.1, -43.7
 
@@ -36,19 +35,37 @@ def main():
     print(f"lat: [{lat_min}, {lat_max}]")
     print(f"lon: [{lon_min}, {lon_max}]")
 
-    # 4. executar busca
+    # 4. busca na KD-tree
     results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
 
-    # 5. mostrar resultados
-    print("\nResultados:")
-    for p in results:
-        print(p)
-    
+    print(f"\nTotal encontrados: {len(results)}")
+
+    # 5. ponto de referência (simula usuário)
+    ref_lat, ref_lon = -19.9, -43.9
+
+    print(f"\nPonto de referência: ({ref_lat}, {ref_lon})")
+
+    # 6. ordenação por distância (HAVERSINE)
+    sorted_hav = sort_by_distance(results, ref_lat, ref_lon, metric="haversine")
+
+    print("\nTop 5 mais próximos (Haversine):")
+    for p, d in sorted_hav[:5]:
+        print(f"{p.name} -> {d:.2f} km")
+
+    # 7. ordenação por distância (EUCLIDIANA)
+    sorted_euc = sort_by_distance(results, ref_lat, ref_lon, metric="euclidean")
+
+    print("\nTop 5 mais próximos (Euclidiana):")
+    for p, d in sorted_euc[:5]:
+        print(f"{p.name} -> {d:.6f} (graus)")
+
+    # 8. debug da distribuição dos dados
     lats = [p.latitude for p in points]
     lons = [p.longitude for p in points]
 
-    print(min(lats), max(lats))
-    print(min(lons), max(lons))
+    print("\nDistribuição dos dados:")
+    print(f"Latitude:  {min(lats)} até {max(lats)}")
+    print(f"Longitude: {min(lons)} até {max(lons)}")
 
 
 if __name__ == "__main__":
