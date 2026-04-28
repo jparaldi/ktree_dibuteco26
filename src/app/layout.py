@@ -52,6 +52,13 @@ def create_layout():
             style={"marginLeft": "10px"}
         ),
 
+        dcc.Checklist(
+            id="use-circular",
+            options=[{"label": "Busca circular", "value": "circular"}],
+            value=[],
+            style={"marginTop": "10px"}
+        ),
+
         html.Button("Pesquisar", id="search-button", n_clicks=0),
 
         html.Div(id="results", style={"marginTop": "20px"}),
