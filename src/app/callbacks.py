@@ -3,7 +3,7 @@ import dash_leaflet as dl
 
 from src.utils.csv_loader import load_points_from_csv
 from src.core.kdtree import build_kdtree
-from src.core.range_search import range_search
+from src.core.range_search import range_search, circular_range_search
 from src.core.geometry import sort_by_distance
 from src.services.geocoding import geocode_address
 
@@ -117,8 +117,17 @@ def register_callbacks(app):
         State("custom-top-n", "value"),
         State("radius", "value"),
         State("custom-radius", "value"),
+        State("use-circular", "value"),
     )
-    def handle_search(n_clicks, address, top_n, custom_top_n, radius, custom_radius):
+    def handle_search(
+        n_clicks,
+        address,
+        top_n,
+        custom_top_n,
+        radius,
+        custom_radius,
+        use_circular,
+    ):
         # evita que a função seja executada antes do primeiro clique
         if n_clicks == 0:
             return html.Div(
@@ -151,15 +160,19 @@ def register_callbacks(app):
 
         ref_lat, ref_lon = coords
 
-        #2 Bounding box
-        delta = radius / 111  # Aproximação: 1 grau ~ 111 km
-        lat_min = ref_lat - delta
-        lat_max = ref_lat + delta
-        lon_min = ref_lon - delta
-        lon_max = ref_lon + delta
+        use_circular = use_circular or []
+        is_circular = "circular" in use_circular
 
-        #3 Busca na KD Tree
-        results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
+        #2 Busca na KD Tree
+        if is_circular:
+            results = circular_range_search(tree, ref_lat, ref_lon, radius)
+        else:
+            delta = radius / 111  # Aproximação: 1 grau ~ 111 km
+            lat_min = ref_lat - delta
+            lat_max = ref_lat + delta
+            lon_min = ref_lon - delta
+            lon_max = ref_lon + delta
+            results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
 
         if not results:
             return html.Div(
@@ -170,7 +183,8 @@ def register_callbacks(app):
         #4 Ordenação por distância
         sorted_results = sort_by_distance(results, ref_lat, ref_lon, metric="haversine")
 
-        filtered = [(p, d) for p, d in sorted_results if d <= radius]
+        if is_circular:
+            filtered = [(p, d) for p, d in sorted_results if d <= radius]
 
         if not filtered:
             return html.Div(
@@ -178,7 +192,9 @@ def register_callbacks(app):
                 style={"color": "#ff9800", "fontWeight": "bold"}
             ), [], [-19.9208, -43.9378]
 
-        top_results = filtered[:top_n]
+            top_results = filtered[:top_n]
+        else:
+            top_results = sorted_results[:top_n]
         
         result_items = []
         for idx, (p, d) in enumerate(top_results, 1):

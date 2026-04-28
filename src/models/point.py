@@ -1,3 +1,6 @@
+from src.services.distance import haversine
+
+
 class Point:
     def __init__(
         self,
@@ -34,3 +37,6 @@ class Point:
             f"Ponto(id={self.id}, name='{self.name}', address='{self.address}', "
             f"latitude={self.latitude}, longitude={self.longitude})"
         )
+
+    def distance_to(self, center_lat: float, center_lon: float) -> float:
+        return haversine(self.latitude, self.longitude, center_lat, center_lon)

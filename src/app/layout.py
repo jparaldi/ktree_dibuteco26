@@ -158,6 +158,12 @@ def create_layout():
                                     ),
                                     style={"marginBottom": "24px"}
                                 ),
+                                html.Checklist(
+                                    id="use-circular",
+                                    options=[{"label": "Busca circular", "value": "circular"}],
+                                    value=[],
+                                    style={"marginTop": "10px"}
+                                ),
 
                                 html.Button(
                                     "Fechar",
