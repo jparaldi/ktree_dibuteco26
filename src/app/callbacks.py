@@ -186,12 +186,6 @@ def register_callbacks(app):
         if is_circular:
             filtered = [(p, d) for p, d in sorted_results if d <= radius]
 
-        if not filtered:
-            return html.Div(
-                "😞 Nenhum buteco neste raio",
-                style={"color": "#ff9800", "fontWeight": "bold"}
-            ), [], [-19.9208, -43.9378]
-
             top_results = filtered[:top_n]
         else:
             top_results = sorted_results[:top_n]

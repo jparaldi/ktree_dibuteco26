@@ -158,7 +158,7 @@ def create_layout():
                                     ),
                                     style={"marginBottom": "24px"}
                                 ),
-                                html.Checklist(
+                                dcc.Checklist(
                                     id="use-circular",
                                     options=[{"label": "Busca circular", "value": "circular"}],
                                     value=[],
