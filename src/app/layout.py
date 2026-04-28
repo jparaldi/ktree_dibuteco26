@@ -215,6 +215,7 @@ def create_layout():
                                     zoom=13.95,
                                     children=[
                                         dl.TileLayer(),
+                                        dl.LayerGroup(id="search-area"),
                                         dl.LayerGroup(id="markers"),
                                     ],
                                     style={"width": "100%", "height": "100%"},

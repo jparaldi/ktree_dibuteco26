@@ -110,6 +110,7 @@ def register_callbacks(app):
     @app.callback(
         Output("results", "children"),
         Output("markers", "children"),
+        Output("search-area", "children"),
         Output("map", "center"),
         Input("search-button", "n_clicks"),
         State("address-input", "value"),
@@ -133,14 +134,14 @@ def register_callbacks(app):
             return html.Div(
                 "🔍 Digite um endereço e clique em 'Pesquisar'",
                 style={"textAlign": "center", "color": "#999", "paddingTop": "40px"}
-            ), [], [-19.9208, -43.9378]
+            ), [], [], [-19.9208, -43.9378]
         
         #evita erro de input vazio
         if not address:
             return html.Div(
                 "⚠️ Endereço inválido",
                 style={"color": "#d32f2f", "fontWeight": "bold"}
-            ), [], [-19.9208, -43.9378]
+            ), [], [], [-19.9208, -43.9378]
         
         # resolver top N
         # garantir tipo correto para top_n
@@ -156,7 +157,7 @@ def register_callbacks(app):
             return html.Div(
                 "❌ Endereço não encontrado",
                 style={"color": "#d32f2f", "fontWeight": "bold"}
-            ), [], [-19.9208, -43.9378]
+            ), [], [], [-19.9208, -43.9378]
 
         ref_lat, ref_lon = coords
 
@@ -165,6 +166,16 @@ def register_callbacks(app):
 
         #2 Busca na KD Tree
         if is_circular:
+            search_area = [
+                dl.Circle(
+                    center=(ref_lat, ref_lon),
+                    radius=radius * 1000,
+                    color="#ff6600",
+                    fillColor="#ff6600",
+                    fillOpacity=0.15,
+                    weight=2,
+                )
+            ]
             results = circular_range_search(tree, ref_lat, ref_lon, radius)
         else:
             delta = radius / 111  # Aproximação: 1 grau ~ 111 km
@@ -172,13 +183,22 @@ def register_callbacks(app):
             lat_max = ref_lat + delta
             lon_min = ref_lon - delta
             lon_max = ref_lon + delta
+            search_area = [
+                dl.Rectangle(
+                    bounds=((lat_min, lon_min), (lat_max, lon_max)),
+                    color="#ff6600",
+                    fillColor="#ff6600",
+                    fillOpacity=0.15,
+                    weight=2,
+                )
+            ]
             results = range_search(tree, lat_min, lat_max, lon_min, lon_max)
 
         if not results:
             return html.Div(
                 "😞 Nenhum buteco encontrado",
                 style={"color": "#ff9800", "fontWeight": "bold"}
-            ), [], [-19.9208, -43.9378]
+            ), [], search_area, [ref_lat, ref_lon]
 
         #4 Ordenação por distância
         sorted_results = sort_by_distance(results, ref_lat, ref_lon, metric="haversine")
@@ -258,4 +278,4 @@ def register_callbacks(app):
                 )
             )
         
-        return result_text, markers, [ref_lat, ref_lon]
+        return result_text, markers, search_area, [ref_lat, ref_lon]
