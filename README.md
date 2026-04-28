@@ -1,7 +1,8 @@
 # ktree_dibuteco26
-Um repositório para o trabalho prático de Algoritmos II - UFMG 2026/1.
 
-# TP1 - Geometria Computacional (KD-Tree)
+## TP1 - Geometria Computacional (KD-Tree)
+
+Um repositório para o trabalho prático de Algoritmos II - UFMG 2026/1.
 
 ## Sobre o trabalho
 
@@ -54,7 +55,7 @@ Projeto em desenvolvimento.
 
 ## Pipeline pra Organização
 
-Bloco 1 — Dados 
+Bloco 1 — Dados
 
 Objetivo: transformar CSV cru → dados utilizáveis
 
@@ -64,7 +65,7 @@ Objetivo: transformar CSV cru → dados utilizáveis
  Garantir que não tem linhas quebradas
  Criar estrutura intermediária (dict ou lista)
 
-Bloco 2 — Geocoding 
+Bloco 2 — Geocoding
 
 Objetivo: endereço → coordenadas
 
@@ -74,7 +75,7 @@ Objetivo: endereço → coordenadas
  Salvar bares_geocoded.csv
  Tratar erros (endereço inválido)
 
-Bloco 3 — KD-Tree 
+Bloco 3 — KD-Tree
 
 Objetivo: estrutura de dados
 
@@ -83,16 +84,16 @@ Objetivo: estrutura de dados
  Implementar busca ortogonal (retângulo)
  Testar com dados pequenos
 
-Bloco 4 — Distância e ordenação 
+Bloco 4 — Distância e ordenação
  Implementar cálculo de distância
  Ordenar resultados por proximidade
 
-Bloco 5 — Integração 
+Bloco 5 — Integração
  Conectar dados → kd-tree
  Executar busca com dados reais
  Validar resultados
 
-Bloco 6 — Interface 
+Bloco 6 — Interface
  Criar app com Dash
  Input de endereço
  Renderizar mapa (Leaflet)
