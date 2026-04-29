@@ -145,7 +145,7 @@ def create_layout():
                                     style={"marginBottom": "24px"}
                                 ),
 
-                                html.Label("Raio de Busca (km):", style={"fontWeight": "bold", "display": "block", "marginBottom": "8px"}),
+                                html.Label("Diagonal de Busca (km):", style={"fontWeight": "bold", "display": "block", "marginBottom": "8px"}),
                                 html.Div(
                                     dcc.Slider(
                                         id="radius-slider",
