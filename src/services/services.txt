@@ -1,5 +1,0 @@
-services trabalha com tudo que depende de API ou cálculo aplicado.
-
-- converter endereço -> coordenadas (OpenStreetMap)
-
-- Calcular distancia entre os pontos.
