@@ -151,7 +151,7 @@ def create_layout():
                                         id="radius-slider",
                                         min=0.5,
                                         max=10,
-                                        step=0.5,
+                                        step=0.1,
                                         value=2,
                                         marks={i: f"{i}km" for i in [0.5, 1, 2, 5, 10]},
                                         tooltip={"placement": "bottom", "always_visible": True},
@@ -215,6 +215,7 @@ def create_layout():
                                     zoom=13.95,
                                     children=[
                                         dl.TileLayer(),
+                                        dl.LayerGroup(id="search-area"),
                                         dl.LayerGroup(id="markers"),
                                     ],
                                     style={"width": "100%", "height": "100%"},
