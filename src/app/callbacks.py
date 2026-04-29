@@ -146,6 +146,7 @@ def register_callbacks(app):
         # resolver top N
         # garantir tipo correto para top_n
         top_n = int(top_n)
+        top_n = max(1, min(127, top_n))
 
         # resolver raio
         # garantir tipo correto para radius

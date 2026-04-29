@@ -137,9 +137,9 @@ def create_layout():
                                     dcc.Slider(
                                         id="top-n-slider",
                                         min=1,
-                                        max=20,
+                                        max=127,
                                         value=5,
-                                        marks={i: str(i) for i in range(1, 21)},
+                                        marks={1: "1", 10: "10", 20: "20", 50: "50", 100: "100", 127: "127"},
                                         tooltip={"placement": "bottom", "always_visible": True},
                                     ),
                                     style={"marginBottom": "24px"}
