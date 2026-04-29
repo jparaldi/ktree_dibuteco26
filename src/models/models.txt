@@ -1,5 +1,0 @@
-Models é mais basico e tem as estruuturas dos dados:
-
-- ponto com latiude e longitude
-
-- nó da kdtree
