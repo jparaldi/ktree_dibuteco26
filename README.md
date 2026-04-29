@@ -49,6 +49,14 @@ Isso irá:
 * Criar o ambiente virtual automaticamente
 * Instalar todas as dependências com base no arquivo `uv.lock`
 
+### Como rodar
+
+Para rodar o super web app, basta digitar no terminal:
+
+```bash
+uv run python -m src.app.app
+```
+
 ## Status
 
 Projeto em desenvolvimento.
