@@ -280,3 +280,16 @@ def register_callbacks(app):
             )
         
         return result_text, markers, search_area, [ref_lat, ref_lon]
+
+    # Reset das opções
+    @app.callback(
+        Output("top-n-slider", "value"),
+        Output("radius-slider", "value"),
+        Output("use-circular", "value"),
+        Input("reset-button", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def reset_options(n_clicks):
+        return 5, 2, []
+        
+        return result_text, markers, search_area, [ref_lat, ref_lon]

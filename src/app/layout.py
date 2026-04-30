@@ -150,10 +150,10 @@ def create_layout():
                                     dcc.Slider(
                                         id="radius-slider",
                                         min=0.5,
-                                        max=10,
+                                        max=35,
                                         step=0.1,
                                         value=2,
-                                        marks={i: f"{i}km" for i in [0.5, 1, 2, 5, 10]},
+                                        marks={i: f"{i}km" for i in [0.5, 1, 2, 5, 10, 20, 30, 35]},
                                         tooltip={"placement": "bottom", "always_visible": True},
                                     ),
                                     style={"marginBottom": "24px"}
@@ -165,19 +165,44 @@ def create_layout():
                                     style={"marginTop": "10px"}
                                 ),
 
-                                html.Button(
-                                    "Fechar",
-                                    id="close-options-button",
+                                html.Div(
+                                    [
+                                        html.Button(
+                                            "Reset",
+                                            id="reset-button",
+                                            style={
+                                                "flex": 1,
+                                                "padding": "12px",
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
+                                                "backgroundColor": "#999",
+                                                "color": "white",
+                                                "border": "none",
+                                                "borderRadius": "8px",
+                                                "cursor": "pointer",
+                                                "marginRight": "8px",
+                                            }
+                                        ),
+                                        html.Button(
+                                            "OK",
+                                            id="close-options-button",
+                                            style={
+                                                "flex": 1,
+                                                "padding": "12px",
+                                                "fontSize": "16px",
+                                                "fontWeight": "bold",
+                                                "backgroundColor": "#ff6600",
+                                                "color": "white",
+                                                "border": "none",
+                                                "borderRadius": "8px",
+                                                "cursor": "pointer",
+                                            }
+                                        ),
+                                    ],
                                     style={
-                                        "width": "100%",
-                                        "padding": "12px",
-                                        "fontSize": "16px",
-                                        "fontWeight": "bold",
-                                        "backgroundColor": "#ff6600",
-                                        "color": "white",
-                                        "border": "none",
-                                        "borderRadius": "8px",
-                                        "cursor": "pointer",
+                                        "display": "flex",
+                                        "gap": "8px",
+                                        "marginTop": "16px",
                                     }
                                 ),
                             ],
